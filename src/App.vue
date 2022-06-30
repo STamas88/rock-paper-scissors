@@ -1,26 +1,28 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <h1>Rock - Paper - Scissors</h1>
+  <game-field></game-field>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import GameField from "./components/GameField.vue";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  data() {
+    return {
+      rock: "./assets/rock.png",
+      paper: "./assets/papper.png",
+      scissors: "./assets/scissors.png",
+    };
+  },
+  components: { GameField },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+
+h1 {
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family: "Lobster", cursive;
+  font-size: 3.5rem;
 }
-</style>
+</style>>
