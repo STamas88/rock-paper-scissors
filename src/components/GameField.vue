@@ -70,7 +70,7 @@ import scissors from "/src/assets/scissors.png";
 export default {
   data() {
     return {
-      isHideSettings: true,
+      isHideSettings: false,
       playerOneName: "",
       playerTwoName: "Computer",
 
@@ -85,7 +85,7 @@ export default {
       Result: " Started the Game! Good Luck!",
 
       isGameFieldHide: true,
-      isGameFinished: true,
+      isGameFinished: false,
 
       playerOneScore: 0,
 
