@@ -25,4 +25,10 @@ h1 {
   font-family: "Lobster", cursive;
   font-size: 3.5rem;
 }
+
+@media only screen and (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+}
 </style>>
