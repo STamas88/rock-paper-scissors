@@ -54,6 +54,7 @@
     </div>
   </div>
   <div class="game-finish" v-if="isGameFinished">
+    <p>{{ player1.score }} - {{ player2.score }}</p>
     <p>{{ Result }}</p>
     <button @click="startNewGame">New Game</button>
   </div>
@@ -69,7 +70,7 @@ import scissors from "/src/assets/scissors.png";
 export default {
   data() {
     return {
-      isHideSettings: false,
+      isHideSettings: true,
       playerOneName: "",
       playerTwoName: "Computer",
 
@@ -81,10 +82,10 @@ export default {
       choicePaper: 1,
       choiceScissors: 2,
 
-      Result: "",
+      Result: " Started the Game! Good Luck!",
 
       isGameFieldHide: true,
-      isGameFinished: false,
+      isGameFinished: true,
 
       playerOneScore: 0,
 
@@ -341,7 +342,7 @@ export default {
 
 .game-finish {
   width: 50%;
-  height: 200px;
+  height: 250px;
   margin: 0 auto;
   border-radius: 50px;
   background-color: rgb(159, 196, 94);
@@ -350,9 +351,9 @@ export default {
 
 .game-finish p {
   font-family: "Indie Flower", cursive;
-  font-size: 4rem;
-  padding-top: 10;
-  margin: 20px;
+  font-size: 2rem;
+  margin: 0;
+  padding: 0;
 }
 
 .game-finish button {
@@ -421,7 +422,7 @@ export default {
     height: 150px;
   }
   .game-finish p {
-    padding-top: 20px;
+    padding-top: 10px;
     font-weight: bold;
     font-size: 1rem;
   }
@@ -467,7 +468,7 @@ export default {
   }
   .game-finish {
     width: 80%;
-    height: 150px;
+    height: 200px;
   }
   .game-finish p {
     padding-top: 20px;
@@ -529,12 +530,12 @@ export default {
   }
   .game-finish {
     width: 50%;
-    height: 150px;
+    height: 200px;
   }
   .game-finish p {
     padding-top: 10px;
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 2.3rem;
   }
 }
 </style>
