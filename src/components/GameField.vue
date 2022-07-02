@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    {{ choiceRockTurbo }}
     <!-- GAME SETTING START -->
 
     <div v-if="!isHideSettings" class="wrapper">
@@ -18,7 +19,7 @@
 
     <!-- PLAYER NAME & SCORE START -->
 
-    <div v-if="!isGameFieldHide" class="player-field">
+    <div v-if="!isScoreFieldHide" class="player-field">
       <div class="player1">
         <div class="player1-name">{{ player1.name }}</div>
         <div class="player1-score">{{ player1.score }}</div>
@@ -45,16 +46,40 @@
       </button>
     </div>
 
+    <div v-if="!isResultHide" class="result">
+      <div class="player-choice">
+        <div v-if="!isPlayerChoiceRock" class="choice">
+          <img :src="rock" />
+        </div>
+        <div v-if="!isPlayerChoicePaper" class="choice">
+          <img :src="paper" />
+        </div>
+        <div v-if="!isPlayerChoiceScissors" class="choice">
+          <img :src="scissors" />
+        </div>
+      </div>
+      <div class="computer-choice">
+        <div v-if="!isComputerChoiceRock" class="choice">
+          <img :src="rock" />
+        </div>
+        <div v-if="!isComputerChoicePaper" class="choice">
+          <img :src="paper" />
+        </div>
+        <div v-if="!isComputerChoiceScissors" class="choice">
+          <img :src="scissors" />
+        </div>
+      </div>
+    </div>
+
     <!-- GAME FIELD END -->
 
     <!-- GAME COMMENT START -->
 
-    <div v-if="!isGameFieldHide" class="comment">
+    <div v-if="!isCommentHide" class="comment">
       {{ Result }}
     </div>
   </div>
   <div class="game-finish" v-if="isGameFinished">
-    <p>{{ player1.score }} - {{ player2.score }}</p>
     <p>{{ Result }}</p>
     <button @click="startNewGame">New Game</button>
   </div>
@@ -70,7 +95,6 @@ import scissors from "/src/assets/scissors.png";
 export default {
   data() {
     return {
-      isHideSettings: false,
       playerOneName: "",
       playerTwoName: "Computer",
 
@@ -78,12 +102,31 @@ export default {
       paper: paper,
       scissors: scissors,
 
+      playerSelect: "",
+      computerSelect: "",
+
+      computerRock: 0,
+      computerPaper: 1,
+      computerScissors: 2,
+
       choiceRock: 0,
       choicePaper: 1,
       choiceScissors: 2,
 
-      Result: " Started the Game! Good Luck!",
+      isResultHide: true,
+      isPlayerChoiceRock: false,
+      isPlayerChoicePaper: false,
+      isPlayerChoiceScissors: false,
+      isComputerChoiceRock: false,
+      isComputerChoicePaper: false,
+      isComputerChoiceScissors: false,
+      isHideResult: false,
 
+      Result: "Started the Game! Good Luck!",
+
+      isHideSettings: false,
+      isScoreFieldHide: true,
+      isCommentHide: true,
       isGameFieldHide: true,
       isGameFinished: false,
 
@@ -101,24 +144,35 @@ export default {
       },
     };
   },
+  // computed: {
+  //   choiceRockTurbo() {
+  //     return this.choiceRock + 5;
+  //   },
+  // },
   watch: {
     player1: {
       handler(newValue) {
-        if (newValue.score === 3) {
-          this.isGameFinished = true;
-          this.isGameFieldHide = true;
-          this.Result = this.player1.name + " Won the Game!";
-        }
+        setTimeout(() => {
+          if (newValue.score === 3) {
+            this.isGameFinished = true;
+            this.isGameFieldHide = true;
+            this.isCommentHide = true;
+            this.Result = this.player1.name + " Won the Game!";
+          }
+        }, 2000);
       },
       deep: true,
     },
     player2: {
       handler(newValue) {
-        if (newValue.score === 3) {
-          this.isGameFinished = true;
-          this.isGameFieldHide = true;
-          this.Result = this.player2.name + " Won the Game!";
-        }
+        setTimeout(() => {
+          if (newValue.score === 3) {
+            this.isGameFinished = true;
+            this.isGameFieldHide = true;
+            this.isCommentHide = true;
+            this.Result = this.player2.name + " Won the Game!";
+          }
+        }, 2000);
       },
       deep: true,
     },
@@ -131,8 +185,10 @@ export default {
       } else {
         this.player1.name = this.playerOneName;
       }
-      this.isHideSettings = !this.isHideSettings;
-      this.isGameFieldHide = !this.isGameFieldHide;
+      this.isHideSettings = true;
+      this.isGameFieldHide = false;
+      this.isCommentHide = false;
+      this.isScoreFieldHide = false;
     },
     choosenRock() {
       const number = Math.floor(Math.random() * 3);
@@ -143,6 +199,20 @@ export default {
           this.player2.name +
           " selected Rock !" +
           " It's Draw.";
+        (this.isPlayerChoicePaper = true),
+          (this.isPlayerChoiceScissors = true),
+          (this.isComputerChoicePaper = true),
+          (this.isComputerChoiceScissors = true);
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          (this.isPlayerChoicePaper = false),
+            (this.isPlayerChoiceScissors = false),
+            (this.isComputerChoicePaper = false),
+            (this.isComputerChoiceScissors = false);
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
       } else if (this.choiceRock + 1 === number) {
         this.Result =
           this.player1.name +
@@ -150,6 +220,20 @@ export default {
           this.player2.name +
           " selected Paper !" +
           " You loose.";
+        this.isPlayerChoicePaper = true;
+        this.isPlayerChoiceScissors = true;
+        this.isComputerChoiceRock = true;
+        this.isComputerChoiceScissors = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoicePaper = false;
+          this.isPlayerChoiceScissors = false;
+          this.isComputerChoiceRock = false;
+          this.isComputerChoiceScissors = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
         this.player2.score++;
       } else {
         this.Result =
@@ -158,6 +242,20 @@ export default {
           this.player2.name +
           " selected Scissors !" +
           " You Win";
+        this.isPlayerChoicePaper = true;
+        this.isPlayerChoiceScissors = true;
+        this.isComputerChoiceRock = true;
+        this.isComputerChoicePaper = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoicePaper = false;
+          this.isPlayerChoiceScissors = false;
+          this.isComputerChoiceRock = false;
+          this.isComputerChoicePaper = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
         this.player1.score++;
       }
     },
@@ -170,6 +268,20 @@ export default {
           this.player2.name +
           " selected Paper !" +
           "  It's Draw.";
+        this.isPlayerChoiceRock = true;
+        this.isPlayerChoiceScissors = true;
+        this.isComputerChoiceRock = true;
+        this.isComputerChoiceScissors = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoiceRock = false;
+          this.isPlayerChoiceScissors = false;
+          this.isComputerChoiceRock = false;
+          this.isComputerChoiceScissors = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
       } else if (this.choicePaper < number) {
         this.Result =
           this.player1.name +
@@ -177,6 +289,20 @@ export default {
           this.player2.name +
           " selected Scissors !" +
           "  You loose.";
+        this.isPlayerChoiceRock = true;
+        this.isPlayerChoiceScissors = true;
+        this.isComputerChoiceRock = true;
+        this.isComputerChoicePaper = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoiceRock = false;
+          this.isPlayerChoiceScissors = false;
+          this.isComputerChoiceRock = false;
+          this.isComputerChoicePaper = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
         this.player2.score++;
       } else {
         this.Result =
@@ -185,6 +311,20 @@ export default {
           this.player2.name +
           " selected Rock !" +
           "  You Win";
+        this.isPlayerChoiceRock = true;
+        this.isPlayerChoiceScissors = true;
+        this.isComputerChoicePaper = true;
+        this.isComputerChoiceScissors = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoiceRock = false;
+          this.isPlayerChoiceScissors = false;
+          this.isComputerChoicePaper = false;
+          this.isComputerChoiceScissors = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
         this.player1.score++;
       }
     },
@@ -197,6 +337,20 @@ export default {
           this.player2.name +
           " selected Scissors !" +
           "  It's Draw.";
+        this.isPlayerChoiceRock = true;
+        this.isPlayerChoicePaper = true;
+        this.isComputerChoiceRock = true;
+        this.isComputerChoicePaper = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoiceRock = false;
+          this.isPlayerChoicePaper = false;
+          this.isComputerChoiceRock = false;
+          this.isComputerChoicePaper = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
       } else if (this.choiceScissors - 1 === number) {
         this.Result =
           this.player1.name +
@@ -204,6 +358,20 @@ export default {
           this.player2.name +
           " selected Paper !" +
           "  You Win.";
+        this.isPlayerChoiceRock = true;
+        this.isPlayerChoicePaper = true;
+        this.isComputerChoiceRock = true;
+        this.isComputerChoiceScissors = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoiceRock = false;
+          this.isPlayerChoicePaper = false;
+          this.isComputerChoiceRock = false;
+          this.isComputerChoiceScissors = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
         this.player1.score++;
       } else {
         this.Result =
@@ -212,6 +380,20 @@ export default {
           this.player2.name +
           " selected Rock !" +
           "  You Loose";
+        this.isPlayerChoiceRock = true;
+        this.isPlayerChoicePaper = true;
+        this.isComputerChoicePaper = true;
+        this.isComputerChoiceScissors = true;
+        this.isGameFieldHide = true;
+        this.isResultHide = false;
+        setTimeout(() => {
+          this.isPlayerChoiceRock = false;
+          this.isPlayerChoicePaper = false;
+          this.isComputerChoicePaper = false;
+          this.isComputerChoiceScissors = false;
+          this.isGameFieldHide = false;
+          this.isResultHide = true;
+        }, 2000);
         this.player2.score++;
       }
     },
@@ -221,6 +403,7 @@ export default {
       this.Result = this.player1.name + " selected New Game. Good Luck !";
       this.isGameFinished = false;
       this.isGameFieldHide = false;
+      this.isCommentHide = false;
     },
   },
 };
@@ -327,11 +510,29 @@ export default {
   background-color: rgb(185, 215, 216);
 }
 
+.result {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  width: 60%;
+  height: 250px;
+  background-color: rgb(199, 165, 121);
+  border-radius: 50px 50px 50px 50px;
+  padding: 50px 0;
+  margin: 0 auto;
+}
+
+.choice img {
+  width: 250px;
+  height: 250px;
+}
+
 .comment {
   font-family: "Indie Flower", cursive;
   font-weight: bolder;
   font-size: 2rem;
-  text-shadow: 5px 5px 5px rgb(75, 75, 75);
+  color: aqua;
+  text-shadow: 5px 5px 5px rgb(104, 104, 104);
   text-align: center;
   padding: 20px;
   margin: 20px auto;
@@ -352,8 +553,8 @@ export default {
 .game-finish p {
   font-family: "Indie Flower", cursive;
   font-size: 2rem;
-  margin: 0;
-  padding: 0;
+  margin-top: 0;
+  padding-top: 30px;
 }
 
 .game-finish button {
@@ -412,6 +613,22 @@ export default {
     font-size: 1rem;
     padding: 1rem;
   }
+  .result {
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    width: 100%;
+    height: 90px;
+    background-color: rgb(199, 165, 121);
+    border-radius: 50px 50px 50px 50px;
+    padding: 40px 0;
+    margin: 0 auto;
+  }
+
+  .choice img {
+    width: 110px;
+    height: 110px;
+  }
 
   .comment {
     width: 80%;
@@ -457,15 +674,32 @@ export default {
   }
 
   .gamefield button {
-    width: 250x;
-    height: 250px;
+    width: 110x;
+    height: 110px;
     box-shadow: 2px 2px 5px 2px rgba(97, 97, 97, 0.76);
   }
 
   .gamefield img {
-    width: 150px;
-    height: 150px;
+    width: 85px;
+    height: 85px;
   }
+  .result {
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    width: 80%;
+    height: 270px;
+    background-color: rgb(199, 165, 121);
+    border-radius: 50px 50px 50px 50px;
+    padding: 40px 0;
+    margin: 0 auto;
+  }
+
+  .choice img {
+    width: 250px;
+    height: 250px;
+  }
+
   .game-finish {
     width: 80%;
     height: 200px;
@@ -522,11 +756,34 @@ export default {
   }
   .gamefield {
     width: 60%;
+    height: 250px;
     margin: 0 auto;
   }
 
   .gamefield button {
+    width: 230px;
+    height: 230px;
     box-shadow: 2px 2px 30px 10px rgba(97, 97, 97, 0.76);
+  }
+  .gamefield img {
+    width: 170px;
+    height: 170px;
+  }
+  .result {
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    width: 60%;
+    height: 270px;
+    background-color: rgb(199, 165, 121);
+    border-radius: 50px 50px 50px 50px;
+    padding: 40px 0;
+    margin: 0 auto;
+  }
+
+  .choice img {
+    width: 250px;
+    height: 250px;
   }
   .game-finish {
     width: 50%;
